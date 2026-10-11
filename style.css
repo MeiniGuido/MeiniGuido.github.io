@@ -151,6 +151,8 @@ strong { color: var(--accent); font-weight: 600; }
 .timeline-date { color: var(--accent); font-size: .85rem; }
 .timeline-item h3 { font-family: var(--font-title); font-size: 1.2rem; margin: .2rem 0 .3rem; }
 .timeline-place { color: var(--muted); }
+.timeline-desc { color: var(--muted); margin: .8rem 0 1rem; max-width: 720px; }
+.timeline-item .chips { margin-top: .4rem; }
 
 /* ===== SKILLS ===== */
 .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }

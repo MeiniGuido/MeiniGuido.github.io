@@ -4,9 +4,9 @@ document.getElementById("year").textContent = new Date().getFullYear();
 // ===== Efecto de escritura en el hero =====
 const roles = [
   "Analista en Sistemas",
+  "Desarrollador PHP / Symfony",
   "Análisis funcional",
-  "Datos con Power BI",
-  "Relevamiento de requerimientos"
+  "Testing y documentación"
 ];
 const typedEl = document.getElementById("typed");
 let roleIndex = 0, charIndex = 0, deleting = false;
