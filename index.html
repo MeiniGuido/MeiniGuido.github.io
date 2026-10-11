@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guido Meini | Analista en Sistemas</title>
+  <meta name="description" content="Portfolio de Guido Meini, Técnico Superior en Análisis Funcional de Sistemas Informáticos. Rosario, Argentina.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314b8a6'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>GM</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== NAVEGACIÓN ===== -->
+  <header class="nav" id="nav">
+    <a href="#inicio" class="nav-logo">GM<span>.</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#educacion">Educación</a>
+      <a href="#conocimientos">Conocimientos</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#certificados">Certificados</a>
+      <a href="#contacto" class="nav-cta">Contacto</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="inicio">
+      <div class="hero-text">
+        <p class="mono hero-hello">Hola, soy</p>
+        <h1>Guido Meini</h1>
+        <h2 class="hero-role">
+          <span id="typed"></span><span class="cursor">|</span>
+        </h2>
+        <p class="hero-desc">
+          Técnico Superior en Análisis Funcional de Sistemas Informáticos.
+          Persona responsable y ordenada, con grandes aptitudes para el trabajo en equipo,
+          en búsqueda de nuevas oportunidades para seguir creciendo en el área de sistemas.
+        </p>
+        <div class="hero-actions">
+          <a href="#contacto" class="btn btn-primary">Contactame</a>
+          <a href="cv-guido-meini.pdf" class="btn btn-ghost" download>Descargar CV</a>
+        </div>
+        <p class="hero-location">📍 Rosario, Santa Fe, Argentina</p>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-ring">
+          <img src="foto.jpg" alt="Foto de Guido Meini">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SOBRE MÍ ===== -->
+    <section class="section reveal" id="sobre-mi">
+      <h2 class="section-title"><span class="mono">01.</span> Sobre mí</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            Soy <strong>Analista en Sistemas</strong> recibido en 2024 en la Escuela Superior de Comercio N° 49
+            "Justo José de Urquiza". Me interesa entender cómo funcionan las organizaciones para
+            traducir sus necesidades en soluciones concretas: desde el relevamiento de requerimientos
+            hasta el análisis de datos.
+          </p>
+          <p>
+            Me considero una persona responsable, ordenada y con muchas ganas de aprender.
+            Disfruto trabajar en equipo, resolver problemas y seguir sumando herramientas
+            como Power BI, MySQL, Python y JavaScript.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat"><span class="stat-num">2024</span><span class="stat-label">Analista recibido</span></div>
+          <div class="stat"><span class="stat-num">3</span><span class="stat-label">Certificaciones</span></div>
+          <div class="stat"><span class="stat-num">EN</span><span class="stat-label">Inglés intermedio</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EDUCACIÓN ===== -->
+    <section class="section reveal" id="educacion">
+      <h2 class="section-title"><span class="mono">02.</span> Educación</h2>
+      <div class="timeline">
+        <article class="timeline-item">
+          <span class="timeline-date mono">2024</span>
+          <h3>Técnico Superior en Análisis Funcional de Sistemas Informáticos</h3>
+          <p class="timeline-place">Escuela Superior de Comercio N° 49 "Justo José de Urquiza"</p>
+        </article>
+        <article class="timeline-item">
+          <span class="timeline-date mono">2018</span>
+          <h3>Bachiller en Humanidades y Ciencias Sociales</h3>
+          <p class="timeline-place">Escuela E.E.M.P.I. N° 3047 "Nuestra Señora de La Merced"</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== CONOCIMIENTOS ===== -->
+    <section class="section reveal" id="conocimientos">
+      <h2 class="section-title"><span class="mono">03.</span> Conocimientos</h2>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-head"><span>Power BI</span><span class="mono">Intermedio</span></div>
+          <div class="bar"><div class="bar-fill" data-level="65"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-head"><span>MySQL</span><span class="mono">Intermedio</span></div>
+          <div class="bar"><div class="bar-fill" data-level="55"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-head"><span>Paquete Office</span><span class="mono">Avanzado</span></div>
+          <div class="bar"><div class="bar-fill" data-level="80"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-head"><span>JavaScript / jQuery</span><span class="mono">Básico</span></div>
+          <div class="bar"><div class="bar-fill" data-level="40"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-head"><span>Python</span><span class="mono">Básico</span></div>
+          <div class="bar"><div class="bar-fill" data-level="35"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-head"><span>Git</span><span class="mono">Básico</span></div>
+          <div class="bar"><div class="bar-fill" data-level="35"></div></div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Análisis y metodologías</h3>
+      <div class="chips">
+        <span class="chip">Relevamiento de requerimientos</span>
+        <span class="chip">Análisis de sistemas</span>
+        <span class="chip">SCRUM</span>
+        <span class="chip">Gestión de proyectos</span>
+        <span class="chip">Excel</span>
+        <span class="chip">Word</span>
+        <span class="chip">PowerPoint</span>
+        <span class="chip">OneNote</span>
+      </div>
+
+      <h3 class="sub-title">Habilidades</h3>
+      <div class="chips chips-soft">
+        <span class="chip">Trabajo en equipo</span>
+        <span class="chip">Capacidad de análisis</span>
+        <span class="chip">Resolución de problemas</span>
+        <span class="chip">Responsabilidad</span>
+        <span class="chip">Profesionalismo</span>
+      </div>
+    </section>
+
+    <!-- ===== EXPERIENCIA ===== -->
+    <section class="section reveal" id="experiencia">
+      <h2 class="section-title"><span class="mono">04.</span> Experiencia</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon">🖥️</div>
+          <h3>Armado de computadoras</h3>
+          <p class="card-tag mono">Particular</p>
+          <p>Selección de componentes, ensamblado y puesta en marcha de equipos a medida según las necesidades de cada cliente.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>Instalación de programas y software</h3>
+          <p class="card-tag mono">Particular</p>
+          <p>Instalación y configuración de sistemas operativos, programas y aplicaciones, y asistencia técnica a usuarios.</p>
+        </article>
+      </div>
+
+      <!--
+        ===== PLANTILLA PARA AGREGAR PROYECTOS =====
+        Copiá este bloque dentro de <div class="cards"> para sumar un proyecto:
+
+        <article class="card">
+          <div class="card-icon">📊</div>
+          <h3>Nombre del proyecto</h3>
+          <p class="card-tag mono">Power BI · MySQL</p>
+          <p>Breve descripción de qué hiciste y qué resultado tuvo.</p>
+          <a class="card-link" href="https://github.com/tu-usuario/tu-repo" target="_blank" rel="noopener">Ver proyecto →</a>
+        </article>
+      -->
+    </section>
+
+    <!-- ===== CERTIFICADOS ===== -->
+    <section class="section reveal" id="certificados">
+      <h2 class="section-title"><span class="mono">05.</span> Certificados</h2>
+      <div class="cards cards-3">
+        <article class="card cert">
+          <span class="cert-year mono">2025</span>
+          <h3>Curso de Power BI</h3>
+          <p class="card-tag mono">CódigoFacilito</p>
+        </article>
+        <article class="card cert">
+          <span class="cert-year mono">2024</span>
+          <h3>JavaScript y jQuery de 0 a 100</h3>
+          <p class="card-tag mono">Udemy</p>
+        </article>
+        <article class="card cert">
+          <span class="cert-year mono">2024</span>
+          <h3>Fundamentos en Gestión de Proyectos</h3>
+          <p class="card-tag mono">soylíder.net</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== CONTACTO ===== -->
+    <section class="section reveal contact" id="contacto">
+      <h2 class="section-title center"><span class="mono">06.</span> Contacto</h2>
+      <p class="contact-text">
+        Estoy buscando nuevas oportunidades en el área de sistemas.
+        Si tenés una propuesta o querés conversar, escribime.
+      </p>
+      <div class="contact-list">
+        <a class="contact-item" href="mailto:guidomeini.ar@gmail.com">
+          <span class="contact-label mono">Email</span>
+          <span>guidomeini.ar@gmail.com</span>
+        </a>
+        <a class="contact-item" href="https://wa.me/543413162232" target="_blank" rel="noopener">
+          <span class="contact-label mono">WhatsApp</span>
+          <span>+54 341 316-2232</span>
+        </a>
+        <!-- Reemplazá "tu-usuario" con tu usuario real de LinkedIn / GitHub -->
+        <a class="contact-item" href="https://www.linkedin.com/in/tu-usuario" target="_blank" rel="noopener">
+          <span class="contact-label mono">LinkedIn</span>
+          <span>/in/tu-usuario</span>
+        </a>
+        <a class="contact-item" href="https://github.com/tu-usuario" target="_blank" rel="noopener">
+          <span class="contact-label mono">GitHub</span>
+          <span>@tu-usuario</span>
+        </a>
+      </div>
+      <a href="mailto:guidomeini.ar@gmail.com" class="btn btn-primary btn-lg">Enviar un email</a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Guido Meini · Rosario, Argentina</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
