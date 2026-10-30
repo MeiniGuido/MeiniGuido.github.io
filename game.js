@@ -85,6 +85,9 @@ window.Game = (() => {
   BUGS.B.push(BUGS.B[0].map((r, i) => i === 7 ? "x.x.....x.x" : r));
   BUGS.C.push(swap(BUGS.C[0], { c: "w", w: "c" }));
   const PTS = { C: 30, A: 20, B: 10 };
+  const EXPLOSION = new Audio("sfx/explosion.wav");
+  EXPLOSION.preload = "auto";
+  let winDone = false;   // true cuando terminó el tema Victory
 
   let state, raf, last, t, keys = {}, pointerX = null, firing = false, stopping = false;
   let player, bullets, bombs, bugs, parts, stars, score, lives, form, fireCd, bombCd, diveCd, endT;
@@ -103,6 +106,7 @@ window.Game = (() => {
     bullets = []; bombs = []; parts = [];
     score = 0; lives = 4; t = 0;
     fireCd = 0; bombCd = 2.5; diveCd = 6;
+    winDone = false;
     form = { y: 28, baseX: (W - (6 * 20 + 11)) / 2, sway: 0, phase: 0 };
     bugs = [];
     ["C", "A", "A", "B"].forEach((type, row) => {
@@ -144,10 +148,16 @@ window.Game = (() => {
     state = result;
     endT = 0;
     if (result === "win") {
-      Sfx.win();
+      Music.jingle("victory").then(() => { winDone = true; });
       addBonus(score + 500);
     } else {
-      [392, 330, 262, 196].forEach((f, i) => Sfx.tone(f, .18, i * .16, "square", .04));
+      Music.silence();
+      if (Sfx.on) {
+        EXPLOSION.currentTime = 0;
+        EXPLOSION.volume = .8;
+        EXPLOSION.play().catch(() => {});
+      }
+      boom(player.x + 6, player.y + 4, [PAL.o, PAL.p, PAL.w, PAL.c], 40);
     }
   }
 
@@ -160,7 +170,7 @@ window.Game = (() => {
     if (state !== "play") {
       if (state === "win" || state === "lose") {
         endT += dt;
-        if (state === "win" && endT > 3.5) stop();
+        if (state === "win" && endT > 3.5 && winDone) stop();
         if (state === "lose" && endT > 8) stop();
       }
       return;
@@ -337,6 +347,7 @@ window.Game = (() => {
   function begin() {
     reset();
     state = "play";
+    Music.play("boss");   // al reintentar después de perder vuelve la música
     Sfx.select();
   }
 

@@ -205,11 +205,13 @@ soundBtn.addEventListener("click", () => {
 const Music = (() => {
   const tracks = {
     menu: new Audio("music/i-am-not-clumsy.mp3"),
-    boss: new Audio("music/boss-battle.mp3")
+    boss: new Audio("music/boss-battle.mp3"),
+    victory: new Audio("music/victory.mp3")
   };
-  const NAMES = { menu: "I AM NOT CLUMSY", boss: "BOSS BATTLE" };
+  const NAMES = { menu: "I AM NOT CLUMSY", boss: "BOSS BATTLE", victory: "VICTORY" };
   const MAX_VOL = .6;      // volumen real con el slider al 100%
   Object.values(tracks).forEach(a => { a.loop = true; a.preload = "none"; a.volume = 0; });
+  tracks.victory.loop = false;
 
   let on = store.get("gm-music", true);
   let level = store.get("gm-music-vol", 6);   // 0..10
@@ -241,6 +243,30 @@ const Music = (() => {
     if (name === "boss" && prev !== next) next.currentTime = 0;
     next.play().catch(() => {});
     fade(next, target(), 700);
+  }
+
+  // Tema corto que suena una sola vez; la promesa se resuelve al terminar
+  function jingle(name) {
+    return new Promise(resolve => {
+      const a = tracks[name];
+      $("#musicTrack").textContent = NAMES[name];
+      if (!on || !level || !unlocked) return resolve();
+      if (playing && playing !== a) { const prev = playing; fade(prev, 0, 250, () => prev.pause()); }
+      playing = a;
+      let to;
+      const done = () => { a.removeEventListener("ended", done); clearTimeout(to); resolve(); };
+      to = setTimeout(done, 12000);
+      a.addEventListener("ended", done);
+      clearInterval(a._fade);
+      a.currentTime = 0;
+      a.volume = target();
+      a.play().catch(done);
+    });
+  }
+
+  // Corta lo que suena sin cambiar el tema elegido
+  function silence() {
+    if (playing) { const p = playing; fade(p, 0, 300, () => p.pause()); }
   }
 
   function stopAll() {
@@ -315,6 +341,8 @@ const Music = (() => {
 
   return {
     play,
+    jingle,
+    silence,
     get panelOpen() { return !panel.hidden; },
     unlock() { if (unlocked) return; unlocked = true; play(want); }
   };
