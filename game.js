@@ -101,12 +101,12 @@ window.Game = (() => {
   function reset() {
     player = { x: W / 2 - 6, y: H - 22, w: 13, h: 8, inv: 0 };
     bullets = []; bombs = []; parts = [];
-    score = 0; lives = 3; t = 0;
-    fireCd = 0; bombCd = 1.8; diveCd = 4;
-    form = { y: 28, baseX: (W - (7 * 20 + 11)) / 2, sway: 0 };
+    score = 0; lives = 4; t = 0;
+    fireCd = 0; bombCd = 2.5; diveCd = 6;
+    form = { y: 28, baseX: (W - (6 * 20 + 11)) / 2, sway: 0, phase: 0 };
     bugs = [];
     ["C", "A", "A", "B"].forEach((type, row) => {
-      for (let col = 0; col < 8; col++) {
+      for (let col = 0; col < 7; col++) {
         bugs.push({ type, row, col, ox: col * 20, oy: row * 15, x: 0, y: 0, w: 11, h: 8, alive: true, dive: null });
       }
     });
@@ -133,7 +133,7 @@ window.Game = (() => {
   function hurt() {
     if (player.inv > 0 || state !== "play") return;
     lives--;
-    player.inv = 1.6;
+    player.inv = 2;
     boom(player.x + 6, player.y + 4, [PAL.c, PAL.w, PAL.g], 16);
     [300, 200, 120].forEach((f, i) => Sfx.tone(f, .1, i * .08, "sawtooth", .04));
     if (lives <= 0) end("lose");
@@ -168,23 +168,24 @@ window.Game = (() => {
 
     const alive = bugs.filter(b => b.alive);
     if (!alive.length) return end("win");
-    const k = 1 + (1 - alive.length / bugs.length) * 1.6;
+    const k = 1 + (1 - alive.length / bugs.length) * .6;
 
     // formación
-    const amp = form.baseX - 6;
-    form.sway = Math.sin(t * .9 * k) * amp;
-    form.y += dt * 2.4 * k;
+    const amp = (form.baseX - 6) * .8;
+    form.phase += dt * .5 * k;
+    form.sway = Math.sin(form.phase) * amp;
+    form.y += dt * 1.3 * k;
     placeBugs();
 
     // bichos en picada
     alive.forEach(b => {
       if (!b.dive) return;
       const d = b.dive;
-      if (!d.back) {
+      if (!d.returning) {
         d.t += dt;
-        b.y = d.sy + d.t * 62;
-        b.x = d.sx + Math.sin(d.t * 3) * 28 + (player.x - d.sx) * Math.min(1, d.t / 2) * .6;
-        if (b.y > H + 10) { d.back = 0; }
+        b.y = d.sy + d.t * 45;
+        b.x = d.sx + Math.sin(d.t * 2) * 22 + (player.x - d.sx) * Math.min(1, d.t / 3) * .35;
+        if (b.y > H + 10) { d.returning = true; d.back = 0; }
       } else {
         d.back += dt;
         const p = Math.min(1, d.back);
@@ -199,14 +200,14 @@ window.Game = (() => {
         b.dive = { t: 0, sx: b.x, sy: b.y };
         Sfx.tone(700, .12, 0, "triangle", .04); Sfx.tone(500, .12, .1, "triangle", .04);
       }
-      diveCd = (2.6 + Math.random() * 2.4) / k;
+      diveCd = (4.5 + Math.random() * 3) / k;
     }
 
     // bombas
     if ((bombCd -= dt) <= 0) {
       const b = alive[Math.floor(Math.random() * alive.length)];
-      bombs.push({ x: b.x + 5, y: b.y + 8, w: 2, h: 5, vy: 65 + Math.random() * 30 });
-      bombCd = (1 + Math.random() * .8) / k;
+      bombs.push({ x: b.x + 5, y: b.y + 8, w: 2, h: 5, vy: 50 + Math.random() * 20 });
+      bombCd = (1.8 + Math.random() * 1.4) / k;
     }
     bombs.forEach(b => b.y += b.vy * dt);
     bombs = bombs.filter(b => b.y < H);
@@ -226,12 +227,12 @@ window.Game = (() => {
 
     // disparo
     fireCd -= dt;
-    if ((keys[" "] || firing) && fireCd <= 0 && bullets.length < 2) {
-      bullets.push({ x: player.x + 6, y: player.y - 3, w: 1, h: 4 });
-      fireCd = .26;
+    if ((keys[" "] || firing) && fireCd <= 0 && bullets.length < 3) {
+      bullets.push({ x: player.x + 5, y: player.y - 3, w: 3, h: 5 });
+      fireCd = .2;
       Sfx.tone(1400, .04, 0, "square", .02); Sfx.tone(900, .04, .03, "square", .02);
     }
-    bullets.forEach(b => b.y -= 210 * dt);
+    bullets.forEach(b => b.y -= 240 * dt);
     bullets = bullets.filter(b => b.y > -6);
 
     // colisiones
@@ -246,7 +247,7 @@ window.Game = (() => {
     });
     bombs.forEach(b => { if (hit(b, player)) { b.y = H + 9; hurt(); } });
     alive.forEach(b => {
-      if (b.alive && b.dive && !b.dive.back && hit(b, player)) {
+      if (b.alive && b.dive && !b.dive.returning && hit(b, player)) {
         b.alive = false; boom(b.x + 5, b.y + 4, [PAL.p, PAL.o]); hurt();
       }
       if (b.alive && !b.dive && b.y + b.h >= player.y - 2) end("lose");
@@ -284,8 +285,8 @@ window.Game = (() => {
       ctx.fillRect(Math.round(b.x) + (Math.floor(b.y / 3) % 2 ? 1 : -1), Math.round(b.y) + 2, 2, 3);
     });
     bullets.forEach(b => {
-      ctx.fillStyle = PAL.c; ctx.fillRect(Math.round(b.x), Math.round(b.y), 1, 4);
-      ctx.fillStyle = PAL.w; ctx.fillRect(Math.round(b.x), Math.round(b.y), 1, 1);
+      ctx.fillStyle = PAL.c; ctx.fillRect(Math.round(b.x) + 1, Math.round(b.y), 1, 4);
+      ctx.fillStyle = PAL.w; ctx.fillRect(Math.round(b.x) + 1, Math.round(b.y), 1, 1);
     });
 
     if (state !== "lose" && !(player.inv > 0 && Math.floor(t * 14) % 2)) {
