@@ -24,14 +24,42 @@
   <!-- ===== HUD ===== -->
   <header class="hud" id="hud">
     <a href="#/" class="hud-logo" data-nav>GM<span class="blink">_</span></a>
+    <div class="hud-coins" id="hudCoins" hidden title="Juntá 5 monedas...">
+      <canvas class="coin-ico" data-coin width="8" height="8"></canvas>
+      <span id="coinCount">0</span>/5
+    </div>
     <div class="hud-score">
       <span class="hud-label">PTS</span>
       <span id="score">000000</span>
     </div>
-    <button class="hud-sound" id="soundBtn" type="button" aria-pressed="true" title="Activar / silenciar sonido">
-      <span class="note">SFX</span> <span id="soundLabel">ON</span>
-    </button>
+    <div class="hud-toggles">
+      <button class="hud-sound" id="musicBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="musicPanel" title="Música">
+        <span class="note">MUS</span> <span id="musicLabel">ON</span>
+      </button>
+      <button class="hud-sound" id="soundBtn" type="button" aria-pressed="true" title="Activar / silenciar efectos">
+        <span class="note">SFX</span> <span id="soundLabel">ON</span>
+      </button>
+    </div>
   </header>
+
+  <!-- Panel de música -->
+  <div class="audio-panel px" id="musicPanel" role="dialog" aria-label="Música" hidden style="--bc: var(--cyan)">
+    <div class="ap-head">
+      <span class="ap-title">MUSICA</span>
+      <button class="ap-close" id="musicClose" type="button" aria-label="Cerrar">X</button>
+    </div>
+    <div class="ap-now">
+      <span class="eq" id="musicEq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>SONANDO: <b id="musicTrack">I AM NOT CLUMSY</b></span>
+    </div>
+    <label class="ap-label" for="musicVol">VOLUMEN <span id="musicVolVal">60%</span></label>
+    <div class="ap-vol">
+      <button type="button" class="ap-step" data-step="-1" aria-label="Bajar volumen">-</button>
+      <input type="range" id="musicVol" min="0" max="10" step="1" value="6">
+      <button type="button" class="ap-step" data-step="1" aria-label="Subir volumen">+</button>
+    </div>
+    <button type="button" class="btn full ap-mute" id="musicMute">SILENCIAR</button>
+  </div>
 
   <!-- ===== PANTALLA DE INICIO ===== -->
   <div class="start" id="start" hidden>
@@ -123,11 +151,10 @@
 
       <div class="about">
         <div class="player-card px" style="--bc: var(--green)">
-          <button class="portrait" id="portrait" type="button" title="Click para ver en HD">
-            <canvas id="portraitPx" width="32" height="32"></canvas>
-            <img src="foto.jpg" alt="Foto de Guido Meini" id="portraitImg">
-            <span class="portrait-tag">8-BIT</span>
-          </button>
+          <div class="portrait">
+            <img src="foto.jpg" alt="Foto de Guido Meini">
+            <span class="portrait-tag">P1</span>
+          </div>
           <p class="player-name">GUIDO MEINI</p>
           <dl class="player-stats">
             <div><dt>CLASE</dt><dd>Analista Funcional · Dev</dd></div>
@@ -420,6 +447,13 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <!-- Easter egg: minijuego -->
+  <div class="game" id="game" hidden>
+    <canvas id="gameCanvas" width="256" height="224" aria-label="Minijuego Bug Hunt"></canvas>
+    <p class="game-help">FLECHAS / A D: MOVER · ESPACIO: DISPARAR · ESC: SALIR</p>
+  </div>
+
   <script src="script.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>

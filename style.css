@@ -129,6 +129,7 @@ body.is-busy #wipe { pointer-events: all; }
 #score { color: var(--text); letter-spacing: 1px; }
 #score.bump { animation: bump .4s steps(2); color: var(--green); }
 @keyframes bump { 50% { transform: scale(1.3); } }
+.hud-toggles { display: flex; gap: 8px; }
 .hud-sound {
   font-family: var(--f-pixel); font-size: 10px;
   padding: 6px 8px; color: var(--cyan);
@@ -345,19 +346,16 @@ body.is-busy #wipe { pointer-events: all; }
   overflow: hidden;
   box-shadow: inset 0 0 0 var(--u) var(--ink);
 }
-.portrait canvas, .portrait img {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+.portrait img {
+  position: absolute; inset: var(--u); width: calc(100% - var(--u) * 2); height: calc(100% - var(--u) * 2);
   object-fit: cover;
-  image-rendering: pixelated;
+  image-rendering: auto;
 }
-.portrait img { opacity: 0; transition: opacity .3s steps(3); }
-.portrait.is-hd img { opacity: 1; }
 .portrait-tag {
   position: absolute; right: 6px; bottom: 6px;
   font-family: var(--f-pixel); font-size: 8px;
   background: var(--green); color: var(--ink); padding: 4px 6px;
 }
-.portrait.is-hd .portrait-tag { background: var(--cyan); }
 .player-name { font-family: var(--f-pixel); font-size: 14px; color: var(--green); text-align: center; }
 .player-stats { display: grid; gap: 8px; }
 .player-stats div { display: grid; grid-template-columns: 82px 1fr; gap: 8px; align-items: baseline; }
@@ -620,3 +618,122 @@ body.is-busy #wipe { pointer-events: all; }
 
 .tile:focus-visible { outline: none; }
 .view-title:focus, .logo-title:focus { outline: none; }
+
+/* =========================================================
+   EASTER EGG: monedas + minijuego
+   ========================================================= */
+.hud-coins {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--orange);
+  animation: toast-in .3s steps(3);
+}
+.coin-ico { width: 16px; height: 16px; image-rendering: pixelated; animation: coin-spin .8s steps(1) infinite; }
+.hud { flex-wrap: wrap; }
+.hud-score { margin-inline: auto; }
+.hud-coins + .hud-score { margin-inline: 0 auto; }
+
+.coin {
+  position: absolute; z-index: 65;
+  width: 40px; height: 40px;
+  padding: 6px;
+  animation: coin-pop .3s steps(3), coin-bob 1.2s steps(2) .3s infinite;
+}
+.coin canvas { width: 100%; height: 100%; image-rendering: pixelated; animation: coin-spin .8s steps(1) infinite; display: block; }
+.coin.is-leaving { animation: blink .2s steps(1) infinite; }
+.coin:focus-visible { outline: 2px dashed var(--orange); }
+@keyframes coin-spin {
+  0%   { transform: scaleX(1); }
+  25%  { transform: scaleX(.6); }
+  50%  { transform: scaleX(.15); }
+  75%  { transform: scaleX(.6); }
+}
+@keyframes coin-pop { from { transform: scale(0); } }
+@keyframes coin-bob { 50% { transform: translateY(-6px); } }
+
+.game {
+  position: fixed; inset: 0; z-index: 76;
+  display: grid; place-items: center; align-content: center; gap: 14px;
+  padding: 16px;
+  background: var(--ink);
+  touch-action: none;
+}
+#gameCanvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+  box-shadow: 0 0 0 4px var(--violet), 0 0 0 8px var(--ink), 0 0 0 12px var(--deep);
+}
+.game-help { font-family: var(--f-pixel); font-size: 9px; color: var(--muted); text-align: center; line-height: 1.8; }
+@media (hover: none) { .game-help { visibility: hidden; } }
+
+/* =========================================================
+   PANEL DE MÚSICA
+   ========================================================= */
+.hud-sound.is-off { color: var(--metal); border-color: var(--metal); }
+.hud-sound.is-off .note { animation: none; }
+#musicBtn[aria-expanded="true"] { background: var(--cyan); color: var(--ink); border-color: var(--cyan); }
+
+.audio-panel {
+  position: fixed; top: 52px; right: 16px; z-index: 72;
+  width: 290px; max-width: calc(100% - 32px);
+  padding: 16px;
+  display: grid; gap: 14px;
+  background: rgba(20, 16, 42, .97);
+  animation: panel-in .2s steps(3);
+}
+@keyframes panel-in { from { transform: translateY(-10px); opacity: 0; } }
+.ap-head { display: flex; justify-content: space-between; align-items: center; }
+.ap-title { font-family: var(--f-pixel); font-size: 11px; color: var(--cyan); }
+.ap-close {
+  font-family: var(--f-pixel); font-size: 10px; color: var(--muted);
+  width: 26px; height: 26px; box-shadow: inset 0 0 0 2px var(--metal);
+}
+.ap-close:hover { color: var(--magenta); box-shadow: inset 0 0 0 2px var(--magenta); }
+.ap-now { display: flex; align-items: center; gap: 10px; font-size: 19px; color: var(--muted); }
+.ap-now b { font-weight: 400; color: var(--text); }
+.ap-label {
+  display: flex; justify-content: space-between;
+  font-family: var(--f-pixel); font-size: 8px; color: var(--magenta);
+}
+.ap-label span { color: var(--text); }
+.ap-vol { display: grid; grid-template-columns: 28px 1fr 28px; gap: 10px; align-items: center; }
+.ap-step {
+  font-family: var(--f-pixel); font-size: 12px; color: var(--ink);
+  height: 28px; background: var(--cyan);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.3);
+}
+.ap-step:active { transform: translateY(2px); box-shadow: none; }
+
+/* slider pixel */
+#musicVol {
+  --p: 60%;
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 14px; margin: 0;
+  background: linear-gradient(to right, var(--green) var(--p), var(--deep) var(--p));
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--metal);
+  cursor: pointer;
+}
+#musicVol::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 22px; border: 0; border-radius: 0;
+  background: var(--text);
+  box-shadow: inset -3px -3px 0 var(--muted), 0 0 0 2px var(--ink);
+}
+#musicVol::-moz-range-thumb {
+  width: 14px; height: 22px; border: 0; border-radius: 0;
+  background: var(--text);
+  box-shadow: inset -3px -3px 0 var(--muted), 0 0 0 2px var(--ink);
+}
+#musicVol::-moz-range-track { background: transparent; }
+#musicVol:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
+
+.ap-mute { --c: var(--magenta); font-size: 10px; }
+.ap-mute.is-muted { --c: var(--green); }
+
+/* mini ecualizador */
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; flex: none; }
+.eq i { width: 4px; height: 4px; background: var(--metal); }
+.eq.is-on i { background: var(--green); animation: eq .6s steps(3) infinite; }
+.eq.is-on i:nth-child(2) { animation-delay: -.2s; animation-duration: .5s; }
+.eq.is-on i:nth-child(3) { animation-delay: -.4s; animation-duration: .7s; }
+.eq.is-on i:nth-child(4) { animation-delay: -.1s; animation-duration: .45s; }
+@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 16px; } }

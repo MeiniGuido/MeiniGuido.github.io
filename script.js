@@ -199,9 +199,130 @@ soundBtn.addEventListener("click", () => {
   renderSound();
   Sfx.blip();
 });
+/* =========================================================
+   MÚSICA DE FONDO
+   ========================================================= */
+const Music = (() => {
+  const tracks = {
+    menu: new Audio("music/i-am-not-clumsy.mp3"),
+    boss: new Audio("music/boss-battle.mp3")
+  };
+  const NAMES = { menu: "I AM NOT CLUMSY", boss: "BOSS BATTLE" };
+  const MAX_VOL = .6;      // volumen real con el slider al 100%
+  Object.values(tracks).forEach(a => { a.loop = true; a.preload = "none"; a.volume = 0; });
+
+  let on = store.get("gm-music", true);
+  let level = store.get("gm-music-vol", 6);   // 0..10
+  let unlocked = false;   // el navegador no deja reproducir antes de una interacción
+  let want = "menu";      // tema que debería sonar
+  let playing = null;     // <audio> activo
+
+  const target = () => (on ? level / 10 * MAX_VOL : 0);
+
+  function fade(a, to, ms, done) {
+    clearInterval(a._fade);
+    const from = a.volume, start = performance.now();
+    a._fade = setInterval(() => {
+      const p = Math.min(1, (performance.now() - start) / ms);
+      a.volume = from + (to - from) * p;
+      if (p >= 1) { clearInterval(a._fade); done && done(); }
+    }, 30);
+  }
+
+  function play(name) {
+    want = name;
+    $("#musicTrack").textContent = NAMES[name];
+    if (!on || !level || !unlocked) return;
+    const next = tracks[name];
+    const prev = playing;
+    if (prev === next && !next.paused) return;
+    if (prev && prev !== next) fade(prev, 0, 400, () => prev.pause());
+    playing = next;
+    if (name === "boss" && prev !== next) next.currentTime = 0;
+    next.play().catch(() => {});
+    fade(next, target(), 700);
+  }
+
+  function stopAll() {
+    Object.values(tracks).forEach(a => fade(a, 0, 300, () => a.pause()));
+  }
+
+  /* ----- Panel ----- */
+  const btn = $("#musicBtn"), panel = $("#musicPanel"), range = $("#musicVol"), muteBtn = $("#musicMute");
+
+  function render() {
+    const audible = on && level > 0;
+    $("#musicLabel").textContent = audible ? "ON" : "OFF";
+    btn.classList.toggle("is-off", !audible);
+    range.value = level;
+    range.style.setProperty("--p", level * 10 + "%");
+    $("#musicVolVal").textContent = level * 10 + "%";
+    muteBtn.textContent = on ? "SILENCIAR" : "ACTIVAR MUSICA";
+    muteBtn.classList.toggle("is-muted", !on);
+    $("#musicEq").classList.toggle("is-on", !!(playing && !playing.paused && audible));
+  }
+
+  function setLevel(n) {
+    level = Math.max(0, Math.min(10, n));
+    store.set("gm-music-vol", level);
+    if (level > 0 && !on) { on = true; store.set("gm-music", true); }
+    unlocked = true;
+    if (level === 0) stopAll();
+    else if (playing && !playing.paused) { clearInterval(playing._fade); playing.volume = target(); }
+    else play(want);
+    render();
+  }
+
+  function setOn(v) {
+    on = v;
+    store.set("gm-music", on);
+    unlocked = true;
+    if (on && level === 0) { level = 5; store.set("gm-music-vol", level); }
+    on ? play(want) : stopAll();
+    render();
+  }
+
+  function open() {
+    panel.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    range.focus();
+    Sfx.blip();
+  }
+  function close() {
+    if (panel.hidden) return;
+    panel.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    btn.focus({ preventScroll: true });
+  }
+
+  btn.addEventListener("click", () => (panel.hidden ? open() : close()));
+  $("#musicClose").addEventListener("click", close);
+  range.addEventListener("input", () => setLevel(+range.value));
+  $$(".ap-step", panel).forEach(b => b.addEventListener("click", () => { setLevel(level + +b.dataset.step); Sfx.move(); }));
+  muteBtn.addEventListener("click", () => setOn(!on));
+  addEventListener("keydown", e => { if (e.key === "Escape" && !panel.hidden) { e.stopPropagation(); close(); } }, true);
+  document.addEventListener("pointerdown", e => {
+    if (!panel.hidden && !panel.contains(e.target) && !btn.contains(e.target)) close();
+  });
+  Object.values(tracks).forEach(a => ["play", "pause"].forEach(ev => a.addEventListener(ev, render)));
+  render();
+
+  // pausa al cambiar de pestaña
+  document.addEventListener("visibilitychange", () => {
+    if (!playing || !on || !level || !unlocked) return;
+    document.hidden ? playing.pause() : playing.play().catch(() => {});
+  });
+
+  return {
+    play,
+    get panelOpen() { return !panel.hidden; },
+    unlock() { if (unlocked) return; unlocked = true; play(want); }
+  };
+})();
+
 // El navegador solo permite audio después de una interacción
 ["pointerdown", "keydown"].forEach(ev =>
-  addEventListener(ev, () => Sfx.init(), { once: true, capture: true })
+  addEventListener(ev, () => { Sfx.init(); Music.unlock(); }, { once: true, capture: true })
 );
 
 /* =========================================================
@@ -346,7 +467,14 @@ const Wipe = (() => {
 const ROUTES = ["sobre-mi", "experiencia", "habilidades", "educacion", "certificados", "proyectos", "contacto"];
 const visited = new Set(store.get("gm-visited", []));
 const scoreEl = $("#score");
-const renderScore = () => { scoreEl.textContent = String(visited.size * 100 + (visited.size === ROUTES.length ? 300 : 0)).padStart(6, "0"); };
+let bonus = store.get("gm-bonus", 0);
+const renderScore = () => { scoreEl.textContent = String(visited.size * 100 + (visited.size === ROUTES.length ? 300 : 0) + bonus).padStart(6, "0"); };
+function addBonus(pts) {
+  bonus += pts;
+  store.set("gm-bonus", bonus);
+  scoreEl.classList.remove("bump"); void scoreEl.offsetWidth; scoreEl.classList.add("bump");
+  renderScore();
+}
 renderScore();
 
 function floater(text, x, y) {
@@ -513,6 +641,7 @@ async function show(route, { instant = false } = {}) {
   if (prev) { prev.hidden = true; prev.classList.remove("is-on", "is-entering"); leave(current); }
 
   const view = views.find(v => v.dataset.view === route);
+  views.forEach(v => { if (v !== view) v.hidden = true; });
   view.hidden = false;
   scrollTo(0, 0);
   void view.offsetWidth;
@@ -558,25 +687,7 @@ function enter(route, view) {
   heading.focus({ preventScroll: true });
 }
 
-/* ----- Sobre mí: retrato pixelado + diálogo tipeado ----- */
-const portrait = $("#portrait");
-const portraitImg = $("#portraitImg");
-function pixelate() {
-  const cv = $("#portraitPx");
-  const ctx = cv.getContext("2d");
-  const img = portraitImg;
-  const side = Math.min(img.naturalWidth, img.naturalHeight);
-  if (!side) return;
-  ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, cv.width, cv.height);
-}
-if (portraitImg.complete) pixelate(); else portraitImg.addEventListener("load", pixelate);
-portrait.addEventListener("click", () => {
-  portrait.classList.toggle("is-hd");
-  $(".portrait-tag", portrait).textContent = portrait.classList.contains("is-hd") ? "HD" : "8-BIT";
-  Sfx.blip();
-});
-
+/* ----- Sobre mí: diálogo tipeado ----- */
 const dialog = $("#dialog");
 const pages = $$("#dialogPages p");
 const pagesHTML = pages.map(p => p.innerHTML);
@@ -687,7 +798,7 @@ function enterProjects() {
    TECLADO
    ========================================================= */
 addEventListener("keydown", e => {
-  if (!$("#start").hidden) return;
+  if (!$("#start").hidden || window.Game?.active || Music.panelOpen) return;
   if (busy) return;
   const keyDir = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down", a: "left", d: "right", w: "up", s: "down" }[e.key];
 
