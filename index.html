@@ -5,279 +5,420 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Guido Meini | Analista en Sistemas</title>
   <meta name="description" content="Portfolio de Guido Meini, Analista Funcional y Desarrollador de Sistemas. Rosario, Argentina.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314b8a6'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>GM</text></svg>">
+  <meta name="theme-color" content="#14102A">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'><rect width='8' height='8' fill='%2314102A'/><rect x='1' y='1' width='6' height='6' fill='%239B4DFF'/><rect x='2' y='2' width='4' height='4' fill='%234CF07A'/><rect x='3' y='3' width='2' height='2' fill='%2314102A'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ===== NAVEGACIÓN ===== -->
-  <header class="nav" id="nav">
-    <a href="#inicio" class="nav-logo">GM<span>.</span></a>
-    <nav class="nav-links" id="navLinks">
-      <a href="#sobre-mi">Sobre mí</a>
-      <a href="#experiencia">Experiencia</a>
-      <a href="#conocimientos">Conocimientos</a>
-      <a href="#educacion">Educación</a>
-      <a href="#certificados">Certificados</a>
-      <a href="#contacto" class="nav-cta">Contacto</a>
-    </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
-      <span></span><span></span><span></span>
+  <!-- Fondo animado + efecto CRT -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- Transición pixelada -->
+  <canvas id="wipe" aria-hidden="true"></canvas>
+
+  <!-- ===== HUD ===== -->
+  <header class="hud" id="hud">
+    <a href="#/" class="hud-logo" data-nav>GM<span class="blink">_</span></a>
+    <div class="hud-score">
+      <span class="hud-label">PTS</span>
+      <span id="score">000000</span>
+    </div>
+    <button class="hud-sound" id="soundBtn" type="button" aria-pressed="true" title="Activar / silenciar sonido">
+      <span class="note">SFX</span> <span id="soundLabel">ON</span>
     </button>
   </header>
 
-  <main>
+  <!-- ===== PANTALLA DE INICIO ===== -->
+  <div class="start" id="start" hidden>
+    <div class="start-inner">
+      <p class="start-pre">MEINI GAMES PRESENTA</p>
+      <h1 class="logo-title" data-text="GUIDO MEINI">GUIDO MEINI</h1>
+      <p class="start-sub">— PORTFOLIO EDITION —</p>
+      <button class="start-btn" id="startBtn" type="button">
+        <span class="blink-slow">PRESIONA START</span>
+      </button>
+      <p class="start-hint">ENTER · ESPACIO · CLICK</p>
+      <p class="start-copy">© 2026 GUIDO MEINI · ROSARIO, ARG</p>
+    </div>
+  </div>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero" id="inicio">
-      <div class="hero-text">
-        <p class="mono hero-hello">Hola, soy</p>
-        <h1>Guido Meini</h1>
-        <h2 class="hero-role">
-          <span id="typed"></span><span class="cursor">|</span>
-        </h2>
-        <p class="hero-desc">
-          Analista Funcional y Desarrollador de Sistemas en Dawer Brokers.
-          Persona responsable y ordenada, con grandes aptitudes para el trabajo en equipo,
-          en búsqueda de nuevas oportunidades para seguir creciendo en el área de sistemas.
+  <main id="app">
+
+    <!-- ===================== MENU PRINCIPAL ===================== -->
+    <section class="view view-menu" data-view="menu" aria-labelledby="menuTitle">
+      <div class="menu-head">
+        <h1 class="logo-title" id="menuTitle" data-text="GUIDO MEINI">GUIDO MEINI</h1>
+        <p class="menu-role"><span id="typed"></span><span class="caret">█</span></p>
+      </div>
+
+      <p class="menu-select"><span class="blink">▸</span> SELECCIONA UN NIVEL</p>
+
+      <nav class="tiles" id="tiles" aria-label="Secciones">
+        <a class="tile" href="#/sobre-mi" style="--ac: var(--green)">
+          <span class="tile-num">01</span>
+          <canvas class="sprite" data-sprite="player" width="12" height="12"></canvas>
+          <span class="tile-name">SOBRE MI</span>
+          <span class="tile-sub">PERFIL DEL JUGADOR</span>
+        </a>
+        <a class="tile" href="#/experiencia" style="--ac: var(--orange)">
+          <span class="tile-num">02</span>
+          <canvas class="sprite" data-sprite="sword" width="12" height="12"></canvas>
+          <span class="tile-name">EXPERIENCIA</span>
+          <span class="tile-sub">REGISTRO DE MISIONES</span>
+        </a>
+        <a class="tile" href="#/habilidades" style="--ac: var(--cyan)">
+          <span class="tile-num">03</span>
+          <canvas class="sprite" data-sprite="gem" width="12" height="12"></canvas>
+          <span class="tile-name">HABILIDADES</span>
+          <span class="tile-sub">POWER-UPS</span>
+        </a>
+        <a class="tile" href="#/educacion" style="--ac: var(--violet)">
+          <span class="tile-num">04</span>
+          <canvas class="sprite" data-sprite="cap" width="12" height="12"></canvas>
+          <span class="tile-name">EDUCACION</span>
+          <span class="tile-sub">NIVELES SUPERADOS</span>
+        </a>
+        <a class="tile" href="#/certificados" style="--ac: var(--mint)">
+          <span class="tile-num">05</span>
+          <canvas class="sprite" data-sprite="trophy" width="12" height="12"></canvas>
+          <span class="tile-name">CERTIFICADOS</span>
+          <span class="tile-sub">LOGROS DESBLOQUEADOS</span>
+        </a>
+        <a class="tile" href="#/proyectos" style="--ac: var(--magenta)">
+          <span class="tile-num">06</span>
+          <canvas class="sprite" data-sprite="chest" width="12" height="12"></canvas>
+          <span class="tile-name">PROYECTOS</span>
+          <span class="tile-sub">PROXIMAMENTE</span>
+        </a>
+        <a class="tile" href="#/contacto" style="--ac: var(--blue)">
+          <span class="tile-num">07</span>
+          <canvas class="sprite" data-sprite="mail" width="12" height="12"></canvas>
+          <span class="tile-name">CONTACTO</span>
+          <span class="tile-sub">MODO 2 JUGADORES</span>
+        </a>
+      </nav>
+
+      <div class="menu-foot">
+        <a class="btn btn-ghost" href="cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
+        <p class="controls">
+          <span class="key">←↑↓→</span> MOVER
+          <span class="key">ENTER</span> ELEGIR
+          <span class="key">ESC</span> VOLVER
         </p>
-        <div class="hero-actions">
-          <a href="#contacto" class="btn btn-primary">Contactame</a>
-          <a href="cv-guido-meini.pdf" class="btn btn-ghost" download>Descargar CV</a>
-        </div>
-        <p class="hero-location">📍 Rosario, Santa Fe, Argentina</p>
-      </div>
-      <div class="hero-photo">
-        <div class="photo-ring">
-          <img src="foto.jpg" alt="Foto de Guido Meini">
-        </div>
       </div>
     </section>
 
-    <!-- ===== SOBRE MÍ ===== -->
-    <section class="section reveal" id="sobre-mi">
-      <h2 class="section-title"><span class="mono">01.</span> Sobre mí</h2>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>
-            Soy <strong>Analista en Sistemas</strong>, recibido en 2024 en la Escuela Superior de Comercio N° 49
-            "Justo José de Urquiza". Desde 2025 trabajo como <strong>Analista Funcional y Desarrollador</strong>
-            en Dawer Brokers, un bróker de seguros, donde participo en el desarrollo de varios sistemas internos y web.
-          </p>
-          <p>
-            Mi día a día combina el relevamiento de requerimientos, el testing y la documentación
-            con el desarrollo en <strong>PHP y Symfony</strong>. Me considero una persona responsable,
-            ordenada y con muchas ganas de aprender; disfruto trabajar en equipo y resolver problemas
-            reales del negocio.
-          </p>
-        </div>
-        <div class="about-stats">
-          <div class="stat"><span class="stat-num">2025</span><span class="stat-label">Desarrollador en Dawer Brokers</span></div>
-          <div class="stat"><span class="stat-num">5</span><span class="stat-label">Sistemas en los que participé</span></div>
-          <div class="stat"><span class="stat-num">6</span><span class="stat-label">Certificaciones</span></div>
-        </div>
+    <!-- ===================== SOBRE MI ===================== -->
+    <section class="view" data-view="sobre-mi" data-title="Sobre mí" style="--ac: var(--green)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="player" width="12" height="12"></canvas>SOBRE MI</h2>
+        <span class="stage">NIVEL 01</span>
       </div>
-    </section>
 
-    <!-- ===== EXPERIENCIA ===== -->
-    <section class="section reveal" id="experiencia">
-      <h2 class="section-title"><span class="mono">02.</span> Experiencia</h2>
-      <div class="timeline">
-        <article class="timeline-item">
-          <span class="timeline-date mono">2025 — Actualidad</span>
-          <h3>Analista Funcional y Desarrollador de Sistemas</h3>
-          <p class="timeline-place">Dawer Brokers · Bróker de seguros</p>
-          <p class="timeline-desc">
-            Análisis de requerimientos, testing de la aplicación FielPet y documentación completa de los sistemas.
-            Integrante del equipo de desarrollo de:
-          </p>
-          <div class="chips">
-            <span class="chip">Dashboard y gestión de pólizas para mascotas</span>
-            <span class="chip">Sitio web de la empresa</span>
-            <span class="chip">Gestión de solicitudes de seguros</span>
-            <span class="chip">Sistema de tickets</span>
-            <span class="chip">Multicotizador automático de empresas</span>
+      <div class="about">
+        <div class="player-card px" style="--bc: var(--green)">
+          <button class="portrait" id="portrait" type="button" title="Click para ver en HD">
+            <canvas id="portraitPx" width="32" height="32"></canvas>
+            <img src="foto.jpg" alt="Foto de Guido Meini" id="portraitImg">
+            <span class="portrait-tag">8-BIT</span>
+          </button>
+          <p class="player-name">GUIDO MEINI</p>
+          <dl class="player-stats">
+            <div><dt>CLASE</dt><dd>Analista Funcional · Dev</dd></div>
+            <div><dt>GREMIO</dt><dd>Dawer Brokers</dd></div>
+            <div><dt>BASE</dt><dd>Rosario, Santa Fe, ARG</dd></div>
+            <div><dt>IDIOMAS</dt><dd>Español · Inglés intermedio</dd></div>
+          </dl>
+          <a class="btn btn-primary full" href="cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
+        </div>
+
+        <div class="about-right">
+          <div class="dialog px" id="dialog" style="--bc: var(--mint)" tabindex="0" aria-live="polite">
+            <span class="dialog-name">GUIDO</span>
+            <div class="dialog-pages" id="dialogPages">
+              <p>Soy <strong>Analista en Sistemas</strong>, recibido en 2024 en la Escuela Superior de Comercio N° 49 "Justo José de Urquiza". Desde 2025 trabajo como <strong>Analista Funcional y Desarrollador</strong> en Dawer Brokers, un bróker de seguros, donde participo en el desarrollo de varios sistemas internos y web.</p>
+              <p>Mi día a día combina el relevamiento de requerimientos, el testing y la documentación con el desarrollo en <strong>PHP y Symfony</strong>.</p>
+              <p>Me considero una persona responsable, ordenada y con muchas ganas de aprender; disfruto trabajar en equipo y resolver problemas reales del negocio. Estoy en búsqueda de <strong>nuevas oportunidades</strong> para seguir creciendo en el área de sistemas.</p>
+            </div>
+            <span class="dialog-next" id="dialogNext">▼</span>
+            <span class="dialog-count" id="dialogCount">1/3</span>
           </div>
+
+          <div class="counters">
+            <div class="counter px" style="--bc: var(--orange)">
+              <span class="counter-num" data-count="2025">0</span>
+              <span class="counter-label">Desarrollador en Dawer Brokers</span>
+            </div>
+            <div class="counter px" style="--bc: var(--cyan)">
+              <span class="counter-num" data-count="5">0</span>
+              <span class="counter-label">Sistemas en los que participé</span>
+            </div>
+            <div class="counter px" style="--bc: var(--magenta)">
+              <span class="counter-num" data-count="6">0</span>
+              <span class="counter-label">Certificaciones</span>
+            </div>
+          </div>
+
+          <div class="perks">
+            <h3 class="sub">◆ PERKS ACTIVOS</h3>
+            <ul class="chips">
+              <li class="chip">Responsable</li>
+              <li class="chip">Ordenado</li>
+              <li class="chip">Trabajo en equipo</li>
+              <li class="chip">Ganas de aprender</li>
+              <li class="chip">Resolución de problemas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EXPERIENCIA ===================== -->
+    <section class="view" data-view="experiencia" data-title="Experiencia" style="--ac: var(--orange)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="sword" width="12" height="12"></canvas>EXPERIENCIA</h2>
+        <span class="stage">NIVEL 02</span>
+      </div>
+
+      <p class="view-intro">REGISTRO DE MISIONES — 2 MISIONES</p>
+
+      <div class="quests">
+        <article class="quest px rise" style="--bc: var(--orange)">
+          <div class="quest-top">
+            <span class="badge badge-live"><span class="blink">●</span> EN CURSO</span>
+            <span class="quest-date">2025 — ACTUALIDAD</span>
+          </div>
+          <h3 class="quest-title">Analista Funcional y Desarrollador de Sistemas</h3>
+          <p class="quest-place">⚑ Dawer Brokers · Bróker de seguros</p>
+          <p class="quest-desc">Análisis de requerimientos, testing de la aplicación FielPet y documentación completa de los sistemas. Integrante del equipo de desarrollo de:</p>
+          <ul class="checklist">
+            <li>Dashboard y gestión de pólizas para mascotas</li>
+            <li>Sitio web de la empresa</li>
+            <li>Gestión de solicitudes de seguros</li>
+            <li>Sistema de tickets</li>
+            <li>Multicotizador automático de empresas</li>
+          </ul>
+          <p class="quest-reward">RECOMPENSA: <span>PHP · Symfony · Testing · Documentación</span></p>
         </article>
-        <article class="timeline-item">
-          <span class="timeline-date mono">2019 — 2025</span>
-          <h3>Armado de computadoras e instalación de software</h3>
-          <p class="timeline-place">Particular</p>
-          <p class="timeline-desc">
-            Armado de equipos a medida e instalación y configuración de programas, software y aplicaciones.
-          </p>
+
+        <article class="quest px rise" style="--bc: var(--green)">
+          <div class="quest-top">
+            <span class="badge badge-done">✓ COMPLETADA</span>
+            <span class="quest-date">2019 — 2025</span>
+          </div>
+          <h3 class="quest-title">Armado de computadoras e instalación de software</h3>
+          <p class="quest-place">⚑ Particular</p>
+          <p class="quest-desc">Armado de equipos a medida e instalación y configuración de programas, software y aplicaciones.</p>
+          <p class="quest-reward">RECOMPENSA: <span>Hardware · Configuración · Soporte</span></p>
         </article>
+      </div>
+    </section>
+
+    <!-- ===================== HABILIDADES ===================== -->
+    <section class="view" data-view="habilidades" data-title="Habilidades" style="--ac: var(--cyan)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="gem" width="12" height="12"></canvas>HABILIDADES</h2>
+        <span class="stage">NIVEL 03</span>
+      </div>
+
+      <p class="view-intro">POWER-UPS EQUIPADOS</p>
+
+      <div class="skills px" style="--bc: var(--cyan)">
+        <div class="skill" data-seg="8"><span class="skill-name">PHP y Symfony</span><span class="skill-lvl lv3">AVANZADO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="6"><span class="skill-name">HTML y CSS</span><span class="skill-lvl lv2">INTERMEDIO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="6"><span class="skill-name">MySQL · MariaDB · PostgreSQL</span><span class="skill-lvl lv2">INTERMEDIO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="6"><span class="skill-name">Git</span><span class="skill-lvl lv2">INTERMEDIO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="6"><span class="skill-name">IA aplicada al trabajo</span><span class="skill-lvl lv2">INTERMEDIO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="3"><span class="skill-name">JavaScript · TypeScript</span><span class="skill-lvl lv1">BASICO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="3"><span class="skill-name">React</span><span class="skill-lvl lv1">BASICO</span><div class="segbar"></div></div>
+        <div class="skill" data-seg="3"><span class="skill-name">Python</span><span class="skill-lvl lv1">BASICO</span><div class="segbar"></div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="px inv" style="--bc: var(--violet)">
+          <h3 class="sub">◆ INVENTARIO · ANALISIS Y METODOLOGIAS</h3>
+          <ul class="slots">
+            <li>Relevamiento de requerimientos</li>
+            <li>Testing</li>
+            <li>Documentación de sistemas</li>
+            <li>SCRUM</li>
+            <li>Excel</li>
+            <li>Word</li>
+            <li>PowerPoint</li>
+            <li>OneNote</li>
+          </ul>
+        </div>
+        <div class="px inv" style="--bc: var(--magenta)">
+          <h3 class="sub">◆ HABILIDADES PASIVAS</h3>
+          <ul class="slots">
+            <li>Trabajo en equipo</li>
+            <li>Capacidad de análisis</li>
+            <li>Responsabilidad</li>
+            <li>Profesionalismo</li>
+            <li>Inglés intermedio (escrito y oral)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EDUCACION ===================== -->
+    <section class="view" data-view="educacion" data-title="Educación" style="--ac: var(--violet)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="cap" width="12" height="12"></canvas>EDUCACION</h2>
+        <span class="stage">NIVEL 04</span>
+      </div>
+
+      <p class="view-intro">MAPA DE NIVELES — 2/2 SUPERADOS</p>
+
+      <ol class="map">
+        <li class="lvl px rise" style="--bc: var(--violet)">
+          <span class="lvl-node">2</span>
+          <div>
+            <span class="lvl-year">2024</span>
+            <h3>Técnico Superior en Análisis Funcional de Sistemas Informáticos</h3>
+            <p>Escuela Superior de Comercio N° 49 "Justo José de Urquiza"</p>
+          </div>
+          <span class="stamp">★ SUPERADO</span>
+        </li>
+        <li class="lvl px rise" style="--bc: var(--blue)">
+          <span class="lvl-node">1</span>
+          <div>
+            <span class="lvl-year">2018</span>
+            <h3>Bachiller en Humanidades y Ciencias Sociales</h3>
+            <p>Escuela E.E.M.P.I. N° 3047 "Nuestra Señora de La Merced"</p>
+          </div>
+          <span class="stamp">★ SUPERADO</span>
+        </li>
+      </ol>
+      <p class="next-level"><span class="blink">▲</span> PROXIMO NIVEL: CARGANDO…</p>
+    </section>
+
+    <!-- ===================== CERTIFICADOS ===================== -->
+    <section class="view" data-view="certificados" data-title="Certificados" style="--ac: var(--mint)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="trophy" width="12" height="12"></canvas>CERTIFICADOS</h2>
+        <span class="stage">NIVEL 05</span>
+      </div>
+
+      <p class="view-intro">LOGROS DESBLOQUEADOS: <span id="achCount">0</span>/6</p>
+
+      <div class="achievements">
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2025</span><h3>Curso profesional de JavaScript</h3><p>CódigoFacilito</p></div>
+        </article>
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2025</span><h3>Curso de Kotlin Básico</h3><p>CódigoFacilito</p></div>
+        </article>
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2025</span><h3>Curso de Testing Estático</h3><p>CódigoFacilito</p></div>
+        </article>
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2025</span><h3>Curso de Power BI</h3><p>CódigoFacilito</p></div>
+        </article>
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2024</span><h3>JavaScript y jQuery de 0 a 100</h3><p>Udemy</p></div>
+        </article>
+        <article class="ach px" style="--bc: var(--mint)">
+          <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
+          <div><span class="ach-year">2024</span><h3>Fundamentos en Gestión de Proyectos</h3><p>soylíder.net</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== PROYECTOS ===================== -->
+    <section class="view" data-view="proyectos" data-title="Proyectos" style="--ac: var(--magenta)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="chest" width="12" height="12"></canvas>PROYECTOS</h2>
+        <span class="stage">NIVEL 06</span>
+      </div>
+
+      <div class="soon px" style="--bc: var(--magenta)">
+        <p class="soon-title">ZONA EN CONSTRUCCION</p>
+        <p class="soon-text">Nuevos niveles en desarrollo. Volvé pronto para descubrir los proyectos.</p>
+        <div class="loader"><div class="loader-fill" id="loaderFill"></div></div>
+        <p class="loader-pct">CARGANDO <span id="loaderPct">0</span>%</p>
       </div>
 
       <!--
-        ===== PLANTILLA PARA AGREGAR PROYECTOS =====
-        Si querés mostrar proyectos propios, pegá esto debajo del </div> de la timeline:
+        ===== PLANTILLA PARA AGREGAR UN PROYECTO =====
+        Reemplazá un .slot bloqueado por esto:
 
-        <h3 class="sub-title">Proyectos</h3>
-        <div class="cards">
-          <article class="card">
-            <div class="card-icon">💻</div>
-            <h3>Nombre del proyecto</h3>
-            <p class="card-tag mono">Symfony · MySQL</p>
-            <p>Breve descripción de qué hiciste y qué resultado tuvo.</p>
-            <a class="card-link" href="https://github.com/tu-usuario/tu-repo" target="_blank" rel="noopener">Ver proyecto →</a>
-          </article>
-        </div>
+        <article class="project px" style="--bc: var(--magenta)">
+          <span class="project-tag">SYMFONY · MYSQL</span>
+          <h3>Nombre del proyecto</h3>
+          <p>Breve descripción de qué hiciste y qué resultado tuvo.</p>
+          <a class="btn btn-primary" href="https://github.com/MeiniGuido/tu-repo" target="_blank" rel="noopener">► JUGAR</a>
+        </article>
       -->
-    </section>
-
-    <!-- ===== CONOCIMIENTOS ===== -->
-    <section class="section reveal" id="conocimientos">
-      <h2 class="section-title"><span class="mono">03.</span> Conocimientos</h2>
-
-      <div class="skills-grid">
-        <div class="skill-card">
-          <div class="skill-head"><span>PHP y Symfony</span><span class="mono">Avanzado</span></div>
-          <div class="bar"><div class="bar-fill" data-level="85"></div></div>
+      <div class="slots-locked">
+        <div class="locked px rise" style="--bc: var(--metal)">
+          <canvas class="sprite" data-sprite="chest" width="12" height="12"></canvas>
+          <span>SLOT 01</span><small>BLOQUEADO</small>
         </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>HTML y CSS</span><span class="mono">Intermedio</span></div>
-          <div class="bar"><div class="bar-fill" data-level="60"></div></div>
+        <div class="locked px rise" style="--bc: var(--metal)">
+          <canvas class="sprite" data-sprite="chest" width="12" height="12"></canvas>
+          <span>SLOT 02</span><small>BLOQUEADO</small>
         </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>MySQL · MariaDB · PostgreSQL</span><span class="mono">Intermedio</span></div>
-          <div class="bar"><div class="bar-fill" data-level="60"></div></div>
+        <div class="locked px rise" style="--bc: var(--metal)">
+          <canvas class="sprite" data-sprite="chest" width="12" height="12"></canvas>
+          <span>SLOT 03</span><small>BLOQUEADO</small>
         </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>Git</span><span class="mono">Intermedio</span></div>
-          <div class="bar"><div class="bar-fill" data-level="60"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>IA aplicada al trabajo</span><span class="mono">Intermedio</span></div>
-          <div class="bar"><div class="bar-fill" data-level="60"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>JavaScript · TypeScript</span><span class="mono">Básico</span></div>
-          <div class="bar"><div class="bar-fill" data-level="35"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>React</span><span class="mono">Básico</span></div>
-          <div class="bar"><div class="bar-fill" data-level="35"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-head"><span>Python</span><span class="mono">Básico</span></div>
-          <div class="bar"><div class="bar-fill" data-level="35"></div></div>
-        </div>
-      </div>
-
-      <h3 class="sub-title">Análisis y metodologías</h3>
-      <div class="chips">
-        <span class="chip">Relevamiento de requerimientos</span>
-        <span class="chip">Testing</span>
-        <span class="chip">Documentación de sistemas</span>
-        <span class="chip">SCRUM</span>
-        <span class="chip">Excel</span>
-        <span class="chip">Word</span>
-        <span class="chip">PowerPoint</span>
-        <span class="chip">OneNote</span>
-      </div>
-
-      <h3 class="sub-title">Habilidades</h3>
-      <div class="chips chips-soft">
-        <span class="chip">Trabajo en equipo</span>
-        <span class="chip">Capacidad de análisis</span>
-        <span class="chip">Responsabilidad</span>
-        <span class="chip">Profesionalismo</span>
-        <span class="chip">Inglés intermedio (escrito y oral)</span>
       </div>
     </section>
 
-    <!-- ===== EDUCACIÓN ===== -->
-    <section class="section reveal" id="educacion">
-      <h2 class="section-title"><span class="mono">04.</span> Educación</h2>
-      <div class="timeline">
-        <article class="timeline-item">
-          <span class="timeline-date mono">2024</span>
-          <h3>Técnico Superior en Análisis Funcional de Sistemas Informáticos</h3>
-          <p class="timeline-place">Escuela Superior de Comercio N° 49 "Justo José de Urquiza"</p>
-        </article>
-        <article class="timeline-item">
-          <span class="timeline-date mono">2018</span>
-          <h3>Bachiller en Humanidades y Ciencias Sociales</h3>
-          <p class="timeline-place">Escuela E.E.M.P.I. N° 3047 "Nuestra Señora de La Merced"</p>
-        </article>
+    <!-- ===================== CONTACTO ===================== -->
+    <section class="view" data-view="contacto" data-title="Contacto" style="--ac: var(--blue)" hidden>
+      <div class="view-bar">
+        <a href="#/" class="back" data-nav>◄ VOLVER</a>
+        <h2 class="view-title"><canvas class="sprite sm" data-sprite="mail" width="12" height="12"></canvas>CONTACTO</h2>
+        <span class="stage">NIVEL 07</span>
       </div>
-    </section>
 
-    <!-- ===== CERTIFICADOS ===== -->
-    <section class="section reveal" id="certificados">
-      <h2 class="section-title"><span class="mono">05.</span> Certificados</h2>
-      <div class="cards cards-3">
-        <article class="card cert">
-          <span class="cert-year mono">2025</span>
-          <h3>Curso profesional de JavaScript</h3>
-          <p class="card-tag mono">CódigoFacilito</p>
-        </article>
-        <article class="card cert">
-          <span class="cert-year mono">2025</span>
-          <h3>Curso de Kotlin Básico</h3>
-          <p class="card-tag mono">CódigoFacilito</p>
-        </article>
-        <article class="card cert">
-          <span class="cert-year mono">2025</span>
-          <h3>Curso de Testing Estático</h3>
-          <p class="card-tag mono">CódigoFacilito</p>
-        </article>
-        <article class="card cert">
-          <span class="cert-year mono">2025</span>
-          <h3>Curso de Power BI</h3>
-          <p class="card-tag mono">CódigoFacilito</p>
-        </article>
-        <article class="card cert">
-          <span class="cert-year mono">2024</span>
-          <h3>JavaScript y jQuery de 0 a 100</h3>
-          <p class="card-tag mono">Udemy</p>
-        </article>
-        <article class="card cert">
-          <span class="cert-year mono">2024</span>
-          <h3>Fundamentos en Gestión de Proyectos</h3>
-          <p class="card-tag mono">soylíder.net</p>
-        </article>
-      </div>
-    </section>
+      <div class="p2 px" style="--bc: var(--blue)">
+        <p class="p2-title"><span class="blink-slow">JUGADOR 2</span> ¿SE UNE A LA PARTIDA?</p>
+        <p class="p2-text">Estoy buscando nuevas oportunidades en el área de sistemas. Si tenés una propuesta o querés conversar, escribime.</p>
 
-    <!-- ===== CONTACTO ===== -->
-    <section class="section reveal contact" id="contacto">
-      <h2 class="section-title center"><span class="mono">06.</span> Contacto</h2>
-      <p class="contact-text">
-        Estoy buscando nuevas oportunidades en el área de sistemas.
-        Si tenés una propuesta o querés conversar, escribime.
-      </p>
-      <div class="contact-list">
-        <a class="contact-item" href="mailto:guidomeini.ar@gmail.com">
-          <span class="contact-label mono">Email</span>
-          <span>guidomeini.ar@gmail.com</span>
-        </a>
-        <a class="contact-item" href="https://wa.me/543413162232" target="_blank" rel="noopener">
-          <span class="contact-label mono">WhatsApp</span>
-          <span>+54 341 316-2232</span>
-        </a>
-        <!-- Reemplazá "tu-usuario" con tu usuario real de LinkedIn / GitHub -->
-        <a class="contact-item" href="https://www.linkedin.com/in/guido-meini-79960129b/?isSelfProfile=true" target="_blank" rel="noopener">
-          <span class="contact-label mono">LinkedIn</span>
-          <span>/in/Guido Meini</span>
-        </a>
-        <a class="contact-item" href="https://github.com/MeiniGuido" target="_blank" rel="noopener">
-          <span class="contact-label mono">GitHub</span>
-          <span>@MeiniGuido</span>
-        </a>
+        <ul class="contact-list">
+          <li><a class="contact-item" href="mailto:guidomeini.ar@gmail.com">
+            <span class="ci-label" style="--c: var(--green)">EMAIL</span><span class="ci-val">guidomeini.ar@gmail.com</span>
+          </a></li>
+          <li><a class="contact-item" href="https://wa.me/543413162232" target="_blank" rel="noopener">
+            <span class="ci-label" style="--c: var(--mint)">WHATSAPP</span><span class="ci-val">+54 341 316-2232</span>
+          </a></li>
+          <li><a class="contact-item" href="https://www.linkedin.com/in/guido-meini-79960129b/" target="_blank" rel="noopener">
+            <span class="ci-label" style="--c: var(--blue)">LINKEDIN</span><span class="ci-val">/in/Guido Meini</span>
+          </a></li>
+          <li><a class="contact-item" href="https://github.com/MeiniGuido" target="_blank" rel="noopener">
+            <span class="ci-label" style="--c: var(--violet)">GITHUB</span><span class="ci-val">@MeiniGuido</span>
+          </a></li>
+        </ul>
+
+        <div class="p2-actions">
+          <a href="mailto:guidomeini.ar@gmail.com" class="btn btn-primary">► ENVIAR UN EMAIL</a>
+          <a href="cv-guido-meini.pdf" class="btn btn-ghost" download>▼ DESCARGAR CV</a>
+        </div>
       </div>
-      <a href="mailto:guidomeini.ar@gmail.com" class="btn btn-primary btn-lg">Enviar un email</a>
     </section>
 
   </main>
 
-  <footer class="footer">
-    <p>© <span id="year"></span> Guido Meini · Rosario, Argentina</p>
-  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="script.js"></script>
 </body>
