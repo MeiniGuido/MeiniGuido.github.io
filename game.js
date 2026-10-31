@@ -150,6 +150,7 @@ window.Game = (() => {
     if (result === "win") {
       Music.jingle("victory").then(() => { winDone = true; });
       addBonus(score + 500);
+      Logros.unlock("ganador");
     } else {
       Music.silence();
       if (Sfx.on) {
@@ -498,6 +499,7 @@ const Coins = (() => {
     if (count < GOAL) return;
     count = 0;
     toast("★ 5 MONEDAS ★ BUG HUNT DESBLOQUEADO");
+    Logros.unlock("secreto");
     setTimeout(() => { countEl.textContent = "0"; Game.start(); }, 1300);
   }
 

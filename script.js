@@ -122,6 +122,48 @@ const mail = [
   "............",
   "............"
 ];
+const coin = [
+  "............",
+  "............",
+  "....oooo....",
+  "...osooox...",
+  "..osooxoox..",
+  "..osooxoox..",
+  "..osooxoox..",
+  "..ooooxoox..",
+  "...ooooox...",
+  "....xxxx....",
+  "............",
+  "............"
+];
+const bug = [
+  "............",
+  "............",
+  "..x.....x...",
+  "...x...x....",
+  "...ppppp....",
+  "..pkpppkp...",
+  ".ppppppppp..",
+  "xpvpvpvpvpx.",
+  "..ppppppp...",
+  ".x..x.x..x..",
+  "............",
+  "............"
+];
+const lock = [
+  "............",
+  "....wwww....",
+  "...ww..ww...",
+  "...ww..ww...",
+  "..vvvvvvvv..",
+  "..vvvvvvvv..",
+  "..vvvkkvvv..",
+  "..vvvkkvvv..",
+  "..vvvvvvvv..",
+  "..dddddddd..",
+  "............",
+  "............"
+];
 
 const SPRITES = {
   player: [player, swap(player, { k: "s" })],            // parpadea
@@ -130,7 +172,10 @@ const SPRITES = {
   cap:    [cap,    swap(cap,    { o: "p" })],
   trophy: [trophy, swap(trophy, { w: "s", s: "w" })],
   chest:  [chest,  swap(chest,  { o: "g" })],
-  mail:   [mail,   mail.map((r, y) => y < 2 ? "..........pp" : r)] // notificación
+  mail:   [mail,   mail.map((r, y) => y < 2 ? "..........pp" : r)], // notificación
+  coin:   [coin,   coin],
+  bug:    [bug,    bug],
+  lock:   [lock,   lock]
 };
 
 function paintSprite(cv, rows) {
@@ -309,6 +354,7 @@ const Music = (() => {
   }
 
   function open() {
+    Logros.closePanel();
     panel.hidden = false;
     btn.setAttribute("aria-expanded", "true");
     range.focus();
@@ -343,6 +389,7 @@ const Music = (() => {
     play,
     jingle,
     silence,
+    closePanel: close,
     get panelOpen() { return !panel.hidden; },
     unlock() { if (unlocked) return; unlocked = true; play(want); }
   };
@@ -532,9 +579,117 @@ function award(route) {
   scoreEl.classList.remove("bump"); void scoreEl.offsetWidth; scoreEl.classList.add("bump");
   renderScore();
   if (visited.size === ROUTES.length) {
-    setTimeout(() => { Sfx.win(); toast("★ 100% COMPLETADO! +300 BONUS ★ GRACIAS POR JUGAR"); }, 900);
+    setTimeout(() => { Sfx.win(); Logros.unlock("completo"); }, 900);
   }
 }
+
+/* =========================================================
+   LOGROS
+   ========================================================= */
+const Logros = (() => {
+  // secret: no se revela hasta descubrir el minijuego
+  const LIST = [
+    {
+      id: "completo", sprite: "trophy", name: "100% COMPLETADO",
+      desc: "Visitaste todos los niveles", hint: () => `Visitá todos los niveles (${visited.size}/${ROUTES.length})`,
+      reward: "+300 PTS", msg: "★ LOGRO: 100% COMPLETADO ★ +300 BONUS · GRACIAS POR JUGAR"
+    },
+    {
+      id: "secreto", sprite: "coin", name: "BUG HUNT DESCUBIERTO", secret: true,
+      desc: "Encontraste el minijuego secreto",
+      msg: "★ LOGRO: BUG HUNT DESCUBIERTO ★ 5 MONEDAS"
+    },
+    {
+      id: "ganador", sprite: "bug", name: "DEPLOY EXITOSO", secret: true,
+      desc: "Ganaste Bug Hunt", hint: () => "Eliminá todos los bugs antes del deploy",
+      reward: "+500 PTS", msg: "★ LOGRO: DEPLOY EXITOSO ★ 0 BUGS EN PRODUCCION"
+    }
+  ];
+
+  const unlocked = new Set(store.get("gm-logros", []));
+  // Partidas anteriores al sistema de logros (el bonus solo se gana con Bug Hunt)
+  if (visited.size === ROUTES.length) unlocked.add("completo");
+  if (bonus > 0) { unlocked.add("secreto"); unlocked.add("ganador"); }
+  store.set("gm-logros", [...unlocked]);
+
+  const btn = $("#logrosBtn"), panel = $("#logrosPanel"), list = $("#logrosList");
+
+  function item(a) {
+    const on = unlocked.has(a.id);
+    const hidden = a.secret && !unlocked.has("secreto");
+    const li = document.createElement("li");
+    li.className = "logro" + (on ? " is-on" : "");
+
+    const ico = document.createElement("canvas");
+    ico.className = "logro-ico";
+    ico.width = ico.height = 12;
+    paintSprite(ico, SPRITES[on ? a.sprite : "lock"][0]);
+
+    const body = document.createElement("div");
+    const name = document.createElement("p");
+    name.className = "logro-name";
+    name.textContent = hidden ? "? ? ?" : a.name;
+    const desc = document.createElement("p");
+    desc.className = "logro-desc";
+    desc.textContent = hidden ? "Logro secreto" : on ? a.desc : a.hint();
+    body.append(name, desc);
+    if (a.reward && !hidden) {
+      const reward = document.createElement("p");
+      reward.className = "logro-reward";
+      reward.textContent = a.reward;
+      body.append(reward);
+    }
+
+    li.append(ico, body);
+    return li;
+  }
+
+  function render() {
+    const count = `${unlocked.size}/${LIST.length}`;
+    $("#logrosLabel").textContent = count;
+    $("#logrosCount").textContent = count;
+    btn.setAttribute("aria-label", `Logros: ${unlocked.size} de ${LIST.length}`);
+    list.replaceChildren(...LIST.map(item));
+  }
+
+  function unlock(id) {
+    if (unlocked.has(id)) return;
+    unlocked.add(id);
+    store.set("gm-logros", [...unlocked]);
+    render();
+    btn.classList.remove("bump"); void btn.offsetWidth; btn.classList.add("bump");
+    toast(LIST.find(a => a.id === id).msg);
+  }
+
+  function open() {
+    Music.closePanel();
+    render();   // el progreso de niveles cambia sin desbloquear nada
+    panel.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    $("#logrosClose").focus();
+    Sfx.blip();
+  }
+  function close() {
+    if (panel.hidden) return;
+    panel.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    btn.focus({ preventScroll: true });
+  }
+
+  btn.addEventListener("click", () => (panel.hidden ? open() : close()));
+  $("#logrosClose").addEventListener("click", close);
+  addEventListener("keydown", e => { if (e.key === "Escape" && !panel.hidden) { e.stopPropagation(); close(); } }, true);
+  document.addEventListener("pointerdown", e => {
+    if (!panel.hidden && !panel.contains(e.target) && !btn.contains(e.target)) close();
+  });
+  render();
+
+  return {
+    unlock,
+    closePanel: close,
+    get panelOpen() { return !panel.hidden; }
+  };
+})();
 
 function sparks(el, color) {
   if (reduceMotion) return;
@@ -826,7 +981,7 @@ function enterProjects() {
    TECLADO
    ========================================================= */
 addEventListener("keydown", e => {
-  if (!$("#start").hidden || window.Game?.active || Music.panelOpen) return;
+  if (!$("#start").hidden || window.Game?.active || Music.panelOpen || Logros.panelOpen) return;
   if (busy) return;
   const keyDir = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down", a: "left", d: "right", w: "up", s: "down" }[e.key];
 
