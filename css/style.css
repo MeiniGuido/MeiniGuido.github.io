@@ -497,7 +497,11 @@ body.is-busy #wipe { pointer-events: all; }
 .ach h3 { font-family: var(--f-pixel); font-weight: 400; font-size: 11px; line-height: 1.6; margin: 6px 0; }
 .ach p { color: var(--mint); font-size: 20px; }
 .ach.is-locked { --bc: var(--metal); filter: grayscale(1) brightness(.6); }
-.ach.is-locked h3, .ach.is-locked p, .ach.is-locked .ach-year { visibility: hidden; }
+.ach.is-locked h3, .ach.is-locked p, .ach.is-locked .ach-year, .ach.is-locked .ach-view { visibility: hidden; }
+.ach[data-cert] { cursor: pointer; }
+.ach.is-locked { cursor: default; }
+.ach[data-cert]:not(.is-locked):hover { --bc: var(--cyan); transform: translateY(-3px); }
+.ach-view { display: block; margin-top: 8px; font-family: var(--f-pixel); font-size: 8px; color: var(--cyan); }
 .ach.is-locked::after {
   content: "? ? ?"; position: absolute; left: 90px; top: 50%; transform: translateY(-50%);
   font-family: var(--f-pixel); font-size: 12px; color: var(--muted);
@@ -508,6 +512,36 @@ body.is-busy #wipe { pointer-events: all; }
   40% { background: var(--panel); }
   60% { background: var(--mint); }
   100% { background: var(--panel); transform: none; }
+}
+
+/* visor de certificados */
+body.no-scroll { overflow: hidden; }
+.cert-modal {
+  position: fixed; inset: 0; z-index: 91;   /* sobre el CRT: las líneas taparían el texto */
+  display: grid; place-items: center;
+  padding: 16px;
+  background: rgba(20, 16, 42, .9);
+}
+.cert-box {
+  width: min(900px, 100%);
+  padding: 14px;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px;
+  background: rgba(20, 16, 42, .97);
+  animation: panel-in .2s steps(3);
+}
+.cert-box .ap-head { gap: 12px; }
+.cert-box .ap-title { color: var(--mint); line-height: 1.6; }
+.cert-box .ap-close { flex: none; }
+.cert-view {
+  display: grid; place-items: center; min-height: 200px;
+  background: var(--ink);
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.cert-status { font-family: var(--f-pixel); font-size: 10px; color: var(--muted); }
+#certImg {
+  max-width: 100%; max-height: calc(100vh - 110px);
+  image-rendering: auto;
+  pointer-events: none; -webkit-user-drag: none;
 }
 
 /* =========================================================
@@ -566,6 +600,16 @@ body.is-busy #wipe { pointer-events: all; }
 .ci-label { font-family: var(--f-pixel); font-size: 9px; color: var(--c); }
 .ci-val { font-size: 23px; }
 .p2-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* ---------- Crédito de autoría (ocupa el padding inferior de la vista) ---------- */
+.credit {
+  position: relative;
+  margin-top: -44px; padding: 0 16px 8px;
+  font-family: var(--f-pixel); font-size: 8px; line-height: 1.8;
+  text-align: right; color: var(--text);
+  text-shadow: 2px 2px 0 var(--ink);
+  pointer-events: none;
+}
 
 /* ---------- Toast ---------- */
 .toast {

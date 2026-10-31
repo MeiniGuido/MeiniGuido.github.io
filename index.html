@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -144,7 +144,7 @@
       </nav>
 
       <div class="menu-foot">
-        <a class="btn btn-ghost" href="cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
+        <a class="btn btn-ghost" href="assets/docs/cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
         <p class="controls">
           <span class="key">←↑↓→</span> MOVER
           <span class="key">ENTER</span> ELEGIR
@@ -164,7 +164,7 @@
       <div class="about">
         <div class="player-card px" style="--bc: var(--green)">
           <div class="portrait">
-            <img src="foto.jpg" alt="Foto de Guido Meini">
+            <img src="assets/img/foto.jpg" alt="Foto de Guido Meini">
             <span class="portrait-tag">P1</span>
           </div>
           <p class="player-name">GUIDO MEINI</p>
@@ -174,7 +174,7 @@
             <div><dt>BASE</dt><dd>Rosario, Santa Fe, ARG</dd></div>
             <div><dt>IDIOMAS</dt><dd>Español · Inglés intermedio</dd></div>
           </dl>
-          <a class="btn btn-primary full" href="cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
+          <a class="btn btn-primary full" href="assets/docs/cv-guido-meini.pdf" download>▼ DESCARGAR CV</a>
         </div>
 
         <div class="about-right">
@@ -352,29 +352,29 @@
       <p class="view-intro">LOGROS DESBLOQUEADOS: <span id="achCount">0</span>/6</p>
 
       <div class="achievements">
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="javascript-profesional" aria-label="Ver certificado: Curso profesional de JavaScript">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2025</span><h3>Curso profesional de JavaScript</h3><p>CódigoFacilito</p></div>
+          <div><span class="ach-year">2025</span><h3>Curso profesional de JavaScript</h3><p>CódigoFacilito</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="kotlin-basico" aria-label="Ver certificado: Curso de Kotlin Básico">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2025</span><h3>Curso de Kotlin Básico</h3><p>CódigoFacilito</p></div>
+          <div><span class="ach-year">2025</span><h3>Curso de Kotlin Básico</h3><p>CódigoFacilito</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="testing-estatico" aria-label="Ver certificado: Curso de Testing Estático">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2025</span><h3>Curso de Testing Estático</h3><p>CódigoFacilito</p></div>
+          <div><span class="ach-year">2025</span><h3>Curso de Testing Estático</h3><p>CódigoFacilito</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="power-bi" aria-label="Ver certificado: Curso de Power BI">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2025</span><h3>Curso de Power BI</h3><p>CódigoFacilito</p></div>
+          <div><span class="ach-year">2025</span><h3>Curso de Power BI</h3><p>CódigoFacilito</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="javascript-jquery" aria-label="Ver certificado: JavaScript y jQuery de 0 a 100">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2024</span><h3>JavaScript y jQuery de 0 a 100</h3><p>Udemy</p></div>
+          <div><span class="ach-year">2024</span><h3>JavaScript y jQuery de 0 a 100</h3><p>Udemy</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
-        <article class="ach px" style="--bc: var(--mint)">
+        <article class="ach px" style="--bc: var(--mint)" role="button" tabindex="0" data-cert="gestion-de-proyectos" aria-label="Ver certificado: Fundamentos en Gestión de Proyectos">
           <canvas class="sprite ach-ico" data-sprite="trophy" width="12" height="12"></canvas>
-          <div><span class="ach-year">2024</span><h3>Fundamentos en Gestión de Proyectos</h3><p>soylíder.net</p></div>
+          <div><span class="ach-year">2024</span><h3>Fundamentos en Gestión de Proyectos</h3><p>soylíder.net</p><span class="ach-view">► VER CERTIFICADO</span></div>
         </article>
       </div>
     </section>
@@ -450,12 +450,31 @@
 
         <div class="p2-actions">
           <a href="mailto:guidomeini.ar@gmail.com" class="btn btn-primary">► ENVIAR UN EMAIL</a>
-          <a href="cv-guido-meini.pdf" class="btn btn-ghost" download>▼ DESCARGAR CV</a>
+          <a href="assets/docs/cv-guido-meini.pdf" class="btn btn-ghost" download>▼ DESCARGAR CV</a>
         </div>
       </div>
     </section>
 
   </main>
+
+  <footer class="credit">
+    <p>HECHO POR GUIDO MEINI</p>
+    <p>© 2026 · AUTORIA PROPIA</p>
+  </footer>
+
+  <!-- Visor de certificados: solo lectura -->
+  <div class="cert-modal" id="certModal" role="dialog" aria-modal="true" aria-labelledby="certTitle" hidden>
+    <div class="cert-box px" style="--bc: var(--mint)">
+      <div class="ap-head">
+        <span class="ap-title" id="certTitle"></span>
+        <button class="ap-close" id="certClose" type="button" aria-label="Cerrar">X</button>
+      </div>
+      <div class="cert-view">
+        <p class="cert-status" id="certStatus" role="status"></p>
+        <img id="certImg" alt="" draggable="false" hidden>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
@@ -465,7 +484,7 @@
     <p class="game-help">FLECHAS / A D: MOVER · ESPACIO: DISPARAR · ESC: SALIR</p>
   </div>
 
-  <script src="script.js"></script>
-  <script src="game.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/game.js"></script>
 </body>
 </html>

@@ -249,9 +249,9 @@ soundBtn.addEventListener("click", () => {
    ========================================================= */
 const Music = (() => {
   const tracks = {
-    menu: new Audio("music/i-am-not-clumsy.mp3"),
-    boss: new Audio("music/boss-battle.mp3"),
-    victory: new Audio("music/victory.mp3")
+    menu: new Audio("assets/audio/music/i-am-not-clumsy.mp3"),
+    boss: new Audio("assets/audio/music/boss-battle.mp3"),
+    victory: new Audio("assets/audio/music/victory.mp3")
   };
   const NAMES = { menu: "I AM NOT CLUMSY", boss: "BOSS BATTLE", victory: "VICTORY" };
   const MAX_VOL = .6;      // volumen real con el slider al 100%
@@ -965,6 +965,60 @@ function enterAchievements(view) {
   }, reduceMotion ? 0 : 450 + i * 320));
 }
 
+/* ----- Certificados: visor de solo lectura -----
+   Muestra una imagen (nunca el PDF) y sin opciones de descarga */
+const Cert = (() => {
+  const modal = $("#certModal"), img = $("#certImg"), status = $("#certStatus");
+  let opener = null;
+
+  function open(card) {
+    const title = $("h3", card).textContent;
+    opener = card;
+    $("#certTitle").textContent = title;
+    img.alt = `Certificado: ${title}`;
+    img.hidden = true;
+    status.hidden = false;
+    status.textContent = "CARGANDO...";
+    img.src = `assets/img/certificados/${card.dataset.cert}.jpg`;
+    modal.hidden = false;
+    document.body.classList.add("no-scroll");
+    $("#certClose").focus();
+    Sfx.select();
+  }
+  function close() {
+    if (modal.hidden) return;
+    modal.hidden = true;
+    img.removeAttribute("src");
+    document.body.classList.remove("no-scroll");
+    opener.focus({ preventScroll: true });
+    Sfx.back();
+  }
+
+  img.addEventListener("load", () => { status.hidden = true; img.hidden = false; });
+  img.addEventListener("error", () => { if (img.getAttribute("src")) status.textContent = "NO SE PUDO CARGAR"; });
+
+  $$(".ach[data-cert]").forEach(card => {
+    const pick = () => { if (!card.classList.contains("is-locked")) open(card); };
+    card.addEventListener("click", pick);
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); }
+    });
+  });
+
+  $("#certClose").addEventListener("click", close);
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
+  modal.addEventListener("contextmenu", e => e.preventDefault());
+  modal.addEventListener("dragstart", e => e.preventDefault());
+  addEventListener("keydown", e => {
+    if (modal.hidden) return;
+    if (e.key === "Escape") { e.stopPropagation(); close(); }
+    else if (e.key === "Tab") e.preventDefault();   // el foco queda en el visor
+  }, true);
+  addEventListener("hashchange", close);
+
+  return { get isOpen() { return !modal.hidden; } };
+})();
+
 /* ----- Proyectos: barra de carga infinita ----- */
 function enterProjects() {
   const fill = $("#loaderFill"), pct = $("#loaderPct");
@@ -981,7 +1035,7 @@ function enterProjects() {
    TECLADO
    ========================================================= */
 addEventListener("keydown", e => {
-  if (!$("#start").hidden || window.Game?.active || Music.panelOpen || Logros.panelOpen) return;
+  if (!$("#start").hidden || window.Game?.active || Music.panelOpen || Logros.panelOpen || Cert.isOpen) return;
   if (busy) return;
   const keyDir = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down", a: "left", d: "right", w: "up", s: "down" }[e.key];
 

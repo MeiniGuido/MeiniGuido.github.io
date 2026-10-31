@@ -85,7 +85,7 @@ window.Game = (() => {
   BUGS.B.push(BUGS.B[0].map((r, i) => i === 7 ? "x.x.....x.x" : r));
   BUGS.C.push(swap(BUGS.C[0], { c: "w", w: "c" }));
   const PTS = { C: 30, A: 20, B: 10 };
-  const EXPLOSION = new Audio("sfx/explosion.wav");
+  const EXPLOSION = new Audio("assets/audio/sfx/explosion.wav");
   EXPLOSION.preload = "auto";
   let winDone = false;   // true cuando terminó el tema Victory
 
